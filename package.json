@@ -12,8 +12,8 @@
     "predeploy": "npm run build",
     "deploy": "git add dist -f && git commit -m \"Deploy\" && git subtree push --prefix dist origin gh-pages || echo 'Already deployed'"
   },
-
   "dependencies": {
+    "framer-motion": "^12.34.3",
     "lucide-react": "^0.553.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

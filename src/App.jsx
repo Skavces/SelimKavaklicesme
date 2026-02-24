@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
-import PrivateProjects from "./pages/PrivateProjects";
+import { ThemeProvider } from "./components/ThemeContext";
 import "./index.css";
 
 export default function App() {
@@ -26,33 +26,34 @@ export default function App() {
   }, [location]);
 
   return (
-    <div className="bg-slate-950 text-white scroll-smooth">
-      <Navbar />
-      <main>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <section id="home">
-                  <Home />
-                </section>
-                <section id="about">
-                  <About />
-                </section>
-                <section id="projects">
-                  <Projects />
-                </section>
-                <section id="contact">
-                  <Contact />
-                </section>
-              </>
-            }
-          />
-          <Route path="/private-projects" element={<PrivateProjects />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <ThemeProvider>
+      <div className="min-h-screen flex flex-col scroll-smooth">
+        <Navbar />
+        <main className="flex-1">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <section id="home">
+                    <Home />
+                  </section>
+                  <section id="about">
+                    <About />
+                  </section>
+                  <section id="projects">
+                    <Projects />
+                  </section>
+                  <section id="contact">
+                    <Contact />
+                  </section>
+                </>
+              }
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </ThemeProvider>
   );
 }

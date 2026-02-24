@@ -1,307 +1,87 @@
-import { useState, useEffect, useRef } from 'react';
-import { Github, Linkedin, Mail, Terminal, Database, Code2, Activity, Cpu, HardDrive } from 'lucide-react';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
+import ProfileCard from '../components/ProfileCard';
 
 export default function Home() {
-  const [displayText, setDisplayText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [terminalLines, setTerminalLines] = useState([]);
-  const canvasRef = useRef(null);
-  
-  const fullText = "Backend Developer";
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    },
+  };
 
-  // Matrix rain effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*(){}[]<>/\\|';
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = '#0f766e';
-      ctx.font = fontSize + 'px monospace';
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-    }
-
-    const interval = setInterval(draw, 33);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Typing effect
-  useEffect(() => {
-    if (currentIndex < fullText.length) {
-      const timeout = setTimeout(() => {
-        setDisplayText(prev => prev + fullText[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, 100);
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex]);
-
-  // Terminal simulation
-  useEffect(() => {
-    const commands = [
-      { cmd: 'systemctl status developer.service', delay: 1000 },
-      { cmd: '● developer.service - Backend Developer Service', delay: 1500 },
-      { cmd: '   Loaded: active (running)', delay: 2000 },
-      { cmd: '   Status: "Ready for new projects"', delay: 2500 },
-    ];
-
-    commands.forEach(({ cmd, delay }) => {
-      setTimeout(() => {
-        setTerminalLines(prev => [...prev, cmd]);
-      }, delay);
-    });
-  }, []);
-
-  const techStack = [
-    { icon: <Database className="w-4 h-4" />, name: "PostgreSQL", status: "active" },
-    { icon: <Cpu className="w-4 h-4" />, name: "Node.js", status: "active" },
-    { icon: <HardDrive className="w-4 h-4" />, name: "MongoDB", status: "active" },
-    { icon: <Code2 className="w-4 h-4" />, name: "Docker", status: "active" },
-  ];
-
-  const apiEndpoints = [
-    { method: 'GET', endpoint: '/api/skills', status: 200 },
-    { method: 'GET', endpoint: '/api/projects', status: 200 },
-    { method: 'POST', endpoint: '/api/contact', status: 200 },
-  ];
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+  };
 
   return (
-    // DÜZELTME 1: "flex items-center" yerine "flex flex-col" yapıldı.
-    // Bu sayede içerik ve scroll butonu alt alta dizilebilir ve scroll butonu en alta itilebilir.
-    <section className="min-h-screen bg-black relative overflow-hidden flex flex-col" id="home">
-      {/* Matrix Rain Background */}
-      <canvas 
-        ref={canvasRef} 
-        className="absolute inset-0 opacity-20"
-      />
-
-      {/* Grid overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(15,118,110,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(15,118,110,0.03)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
-
-      {/* DÜZELTME 2: İçeriği kapsayan div'e "flex-grow flex items-center" verildi.
-          Böylece bu kısım ekranın boş kalan tüm alanını kaplar ve içeriği ortalar. */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full flex-grow flex items-center">
-        <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
-          {/* Left Column - Main Content */}
-          <div className="space-y-6">
-
-            {/* Name and Title */}
-            <div className="space-y-3">
-              <h1 className="text-5xl sm:text-6xl font-bold text-white font-mono">
-                <span className="text-teal-400">$</span> SELİM
-                <br />
-                <span className="text-gray-400">KAVAKLIÇEŞME</span>
-              </h1>
-
-              <div className="flex items-center space-x-2 text-xl text-gray-500 font-mono">
-                <span className="text-teal-400">{'>'}</span>
-                <span className="text-teal-300">{displayText}</span>
-                <span className="w-0.5 h-6 bg-teal-400 animate-pulse"></span>
-              </div>
-            </div>
-
-            {/* API Endpoints Display */}
-            <div className="bg-gray-950/80 border border-gray-800 rounded-lg p-4 backdrop-blur-sm">
-              <div className="flex items-center space-x-2 mb-3 pb-2 border-b border-gray-800">
-                <Terminal className="w-4 h-4 text-teal-400" />
-                <span className="text-gray-400 text-xs font-mono">API ENDPOINTS</span>
-              </div>
-              <div className="space-y-2 font-mono text-xs">
-                {apiEndpoints.map((api, idx) => (
-                  <div key={idx} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <span className={`${
-                        api.method === 'GET' ? 'text-blue-400' : 'text-green-400'
-                      } font-bold`}>{api.method}</span>
-                      <span className="text-gray-500">{api.endpoint}</span>
-                    </div>
-                    <span className="text-teal-400">{api.status}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Tech Stack Status */}
-            <div className="grid grid-cols-2 gap-3">
-              {techStack.map((tech, idx) => (
-                <div 
-                  key={idx}
-                  className="bg-gray-950/80 border border-gray-800 rounded-lg p-3 backdrop-blur-sm hover:border-teal-800/50 transition-colors"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-teal-400">{tech.icon}</span>
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                  </div>
-                  <div className="font-mono text-xs text-gray-400">{tech.name}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-3 pt-4">
-              <a
-                href="#projects"
-                className="group relative px-6 py-3 font-mono text-sm text-black bg-teal-400 rounded overflow-hidden hover:bg-teal-300 transition-all"
-              >
-                <span>$ VIEW_PROJECTS</span>
-              </a>
-
-              <a
-                href="#contact"
-                className="group px-6 py-3 font-mono text-sm text-teal-400 border border-teal-800/50 rounded hover:bg-teal-950/30 transition-all"
-              >
-                <span>$ INIT_CONTACT</span>
-              </a>
-            </div>
-
-            {/* Social Links */}
-            <div className="flex items-center space-x-3 pt-4">
-              <span className="text-gray-600 text-xs font-mono">CONNECT:</span>
-              {[
-                { icon: <Github className="w-4 h-4" />, href: "https://github.com/Skavces", label: 'GitHub' },
-                { icon: <Linkedin className="w-4 h-4" />, href: "https://www.linkedin.com/in/selim-kavakl%C4%B1%C3%A7e%C5%9Fme-a1b7b3351/", label: 'LinkedIn' },
-                { icon: <Mail className="w-4 h-4" />, href: "mailto:selimkavaklicesme@gmail.com", label: 'Email' },
-              ].map((social, idx) => (
-                <a
-                  key={idx}
-                  href={social.href}
-                  target={social.href.startsWith('http') ? "_blank" : undefined}
-                  rel={social.href.startsWith('http') ? "noopener noreferrer" : undefined}
-                  aria-label={social.label}
-                  className="p-2 bg-gray-950/80 border border-gray-800 rounded hover:border-teal-800/50 hover:text-teal-400 text-gray-500 transition-all"
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Column - Terminal */}
-          <div className="w-full">
-            <div className="bg-gray-950 border border-gray-800 rounded-lg overflow-hidden shadow-2xl">
-              {/* Terminal Header */}
-              <div className="bg-gray-900 border-b border-gray-800 px-4 py-2 flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className="flex space-x-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  </div>
-                  <Terminal className="w-4 h-4 text-gray-500 ml-2" />
-                  <span className="text-gray-500 text-xs font-mono">terminal@selim</span>
-                </div>
-                <div className="text-gray-600 text-xs font-mono">bash</div>
-              </div>
-
-              {/* Terminal Body */}
-              <div className="p-4 font-mono text-xs space-y-1 min-h-[400px]">
-                <div className="text-gray-500">Last login: {new Date().toLocaleString()}</div>
-                <div className="text-gray-500 mb-4">
-                  Welcome to Selim's Development Environment
-                </div>
-
-                {terminalLines.map((line, idx) => (
-                  <div key={idx} className={`${
-                    line.includes('●') ? 'text-teal-400' : 
-                    line.includes('Loaded') ? 'text-green-400' :
-                    line.includes('Status') ? 'text-blue-400' :
-                    'text-gray-400'
-                  }`}>
-                    {line}
-                  </div>
-                ))}
-
-                <div className="pt-4 space-y-2">
-                  <div className="text-gray-500">
-                    <span className="text-teal-400">~$</span> cat skills.json
-                  </div>
-                  <div className="pl-4 text-gray-400">
-                    <div>{'{'}</div>
-                    <div className="pl-4">
-                      <span className="text-blue-400">"backend"</span>: [
-                      <span className="text-green-400">"Node.js"</span>,
-                      <span className="text-green-400"> "Nest.js"</span>,
-                      <span className="text-green-400"> "Express.js"</span>
-                      ],
-                    </div>
-                    <div className="pl-4">
-                      <span className="text-blue-400">"databases"</span>: [
-                      <span className="text-green-400">"PostgreSQL"</span>,
-                      <span className="text-green-400"> "MongoDB"</span>,
-                      <span className="text-green-400"> "Redis"</span>
-                      ],
-                    </div>
-                    <div className="pl-4">
-                      <span className="text-blue-400">"tools"</span>: [
-                      <span className="text-green-400">"Docker"</span>,
-                      <span className="text-green-400"> "Git"</span>,
-                      <span className="text-green-400"> "Linux"</span>
-                      ]
-                    </div>
-                    <div>{'}'}</div>
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <div className="flex items-center space-x-1">
-                    <span className="text-teal-400">~$</span>
-                    <span className="w-2 h-4 bg-teal-400 animate-pulse ml-1"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* System Info Card */}
-            <div className="mt-4 bg-gray-950/80 border border-gray-800 rounded-lg p-4 backdrop-blur-sm">
-              <div className="font-mono text-xs space-y-2">
-                <div className="flex justify-between text-gray-500">
-                  <span>UPTIME:</span>
-                  <span className="text-teal-400">99.9%</span>
-                </div>
-                <div className="flex justify-between text-gray-500">
-                  <span>RESPONSE_TIME:</span>
-                  <span className="text-teal-400">&lt; 100ms</span>
-                </div>
-                <div className="flex justify-between text-gray-500">
-                  <span>PROJECTS_DEPLOYED:</span>
-                  <span className="text-teal-400">24+</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <section className="w-full min-h-dvh flex flex-col justify-center relative overflow-hidden py-24 px-4 sm:px-6" id="home">
+      
+      {/* Very Subtle Background Noise/Gradient */}
+      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
+        <div className="absolute top-0 right-1/4 w-[40vw] h-[40vw] bg-brand-200/50 dark:bg-brand-800/50 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen opacity-50 transition-opacity duration-1000"></div>
+        <div className="absolute bottom-0 left-1/4 w-[30vw] h-[30vw] bg-brand-300/30 dark:bg-brand-700/30 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen opacity-40 transition-opacity duration-1000"></div>
       </div>
 
-      {/* Scroll Indicator - DÜZELTME 3: Yapısal Değişiklik */}
-      {/* - Mobilde (default): "relative mt-12 mb-8" -> İçeriğin altına 12 birim boşluk bırakarak yerleşir. Asla üstüne binmez.
-         - Desktopta (md:): "md:absolute md:bottom-8" -> Eskisi gibi altta sabit durur.
-      */}
-      <div className="relative z-20 mt-12 mb-8 md:mt-0 md:mb-0 md:absolute md:bottom-8 left-0 md:left-1/2 w-full md:w-auto flex justify-center md:-translate-x-1/2 animate-bounce">
-        <div className="flex flex-col items-center space-y-1">
-          <span className="text-gray-700 text-xs font-mono">SCROLL_DOWN</span>
-          <div className="w-5 h-8 border-2 border-teal-800/50 rounded-full p-1">
-            <div className="w-1 h-2 bg-teal-400 rounded-full mx-auto animate-pulse"></div>
-          </div>
+      <div className="relative z-10 max-w-5xl mx-auto w-full flex flex-col">
+        
+        {/* Main Hero Section */}
+        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 md:gap-8">
+          <motion.div 
+            className="flex-1 flex flex-col items-start"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            
+            <motion.h1 
+               variants={itemVariants} 
+               className="text-5xl sm:text-6xl md:text-7xl font-semibold text-brand-900 dark:text-brand-100 tracking-tight leading-[1.05] mb-4 text-balance"
+            >
+               Selim Kavaklıçeşme
+            </motion.h1>
+
+            <motion.h2 
+               variants={itemVariants} 
+               className="text-2xl sm:text-3xl font-medium text-brand-700 dark:text-brand-300 tracking-tight mb-6 text-balance"
+            >
+               Ölçeklenebilir backend sistemleri ve REST API’ler geliştiriyorum.
+            </motion.h2>
+
+            <motion.p variants={itemVariants} className="text-lg text-brand-600 dark:text-brand-400 max-w-xl leading-relaxed mb-10">
+              Node.js (NestJS/Express) ile servis mimarileri kuruyor, PostgreSQL üzerinde performans odaklı çözümler üretiyorum.
+            </motion.p>
+            
+            <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4">
+               <a href="#projects" className="px-6 py-3 bg-brand-900 dark:bg-brand-50 text-brand-50 dark:text-brand-900 font-medium rounded-xl hover:scale-95 transition-transform duration-300 shadow-lg">
+                  Projeleri Görüntüle
+               </a>
+            </motion.div>
+          </motion.div>
+
+          <motion.div 
+            className="w-full md:w-1/3 flex justify-center md:justify-end"
+            initial={{ opacity: 0, scale: 0.9, rotate: -5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="relative w-[320px] h-[440px] transform md:scale-[0.85] lg:scale-100 origin-center md:origin-right mx-auto md:mx-0 flex justify-center items-center">
+              <ProfileCard 
+                avatarUrl="https://github.com/Skavces.png"
+                title="Backend Developer"
+                contactText="İletişime Geç"
+                onContactClick={() => {
+                  const contactSection = document.getElementById('contact');
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    window.location.href = "#contact";
+                  }
+                }}
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
