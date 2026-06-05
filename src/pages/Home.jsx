@@ -46,11 +46,11 @@ export default function Home() {
                variants={itemVariants} 
                className="text-2xl sm:text-3xl font-medium text-brand-700 dark:text-brand-300 tracking-tight mb-6 text-balance"
             >
-               Ölçeklenebilir backend sistemleri ve REST API’ler geliştiriyorum.
+               Küçük ve orta ölçekli işletmeler için kurumsal web çözümleri ve mini ERP sistemleri geliştiriyorum.
             </motion.h2>
 
             <motion.p variants={itemVariants} className="text-lg text-brand-600 dark:text-brand-400 max-w-xl leading-relaxed mb-10">
-              Node.js (NestJS/Express) ile servis mimarileri kuruyor, PostgreSQL üzerinde performans odaklı çözümler üretiyorum.
+              İşletmenizin ihtiyaçlarına özel dijital çözümler üretiyor; yönetim panelleri, stok takibi, müşteri yönetimi ve daha fazlasını tek çatı altında sunuyorum.
             </motion.p>
             
             <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4">

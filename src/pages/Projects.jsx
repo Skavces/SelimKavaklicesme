@@ -15,31 +15,52 @@ export default function Projects() {
 
   const projects = [
     {
-      title: "Kelimo",
-      problem: "Geleneksel dil öğrenimi sıkıcı olabiliyor ve etkili bir tekrar sistemi sunmuyor.",
-      solution: "Reels tarzı kaydırma, aralıklı tekrar ve mini oyunlar içeren oyunlaştırılmış bir kelime öğrenme platformu.",
-      tech: ["NestJS", "React", "Prisma", "PostgreSQL", "Tailwind CSS"],
+      title: "RenEl Enerji",
+      description: "Güneş enerjisi şirketi için JWT/2FA korumalı admin paneli, proje/referans yönetimi ve medya yükleme özellikli fullstack kurumsal site. Docker + Nginx ile production deploy.",
+      tech: ["React 19", "NestJS", "TypeORM", "PostgreSQL", "Docker", "Nginx"],
       icon: <Globe className="w-5 h-5 text-brand-500 dark:text-brand-300" />,
-      images: ["/dil.png"],
-      github: "https://github.com/Skavces/KelimoApp"
+      images: ["/renelenerji.png"],
+      url: "https://renelenerji.com"
     },
     {
-      title: "SomaFM",
-      problem: "Yerel radyo ağları modern ve birleşik bir çoklu platform erişimine sahip değildi.",
-      solution: "Bölgenin radyo ve medya organizasyonu için resmi web ve mobil uygulamasını geliştirdim.",
-      tech: ["NestJS", "React", "React-Native", "PostgreSQL"],
-      icon: <Code className="w-5 h-5 text-brand-500 dark:text-brand-300" />,
-      images: ["/somafm.jpg"],
-      github: "https://github.com/berkesongul/somafm"
+      title: "New Temizlik",
+      description: "Temizlik firması için hizmet tanıtımı, referanslar ve iletişim formu içeren modern kurumsal web sitesi.",
+      tech: ["React", "NestJS", "PostgreSQL", "Tailwind CSS", "Docker"],
+      icon: <Globe className="w-5 h-5 text-brand-500 dark:text-brand-300" />,
+      images: ["/newtemizlik.png"],
+      url: "https://newtemizlik.com"
+    },
+    {
+      title: "Pablo Artisan Coffee",
+      description: "Kafe için QR kodla erişilen dijital menü ve güvenli admin paneli. JWT + TOTP 2FA, brute-force koruması ve MinIO ile görsel yükleme. Docker Compose ile tek komutta ayağa kalkan production ortamı.",
+      tech: ["React 18", "TypeScript", "NestJS", "TypeORM", "PostgreSQL", "MinIO", "Docker"],
+      icon: <Globe className="w-5 h-5 text-brand-500 dark:text-brand-300" />,
+      images: ["/pablo.png"],
+      url: "#"
     },
     {
       title: "Yağhane",
-      problem: "Zeytinyağı üretim tesisleri için yağ satışlarının ve dağıtılan varillerin manuel takibi verimsizliklere yol açıyordu.",
-      solution: "Satış takibini otomatikleştirmek ve kolaylaştırmak için güçlü bir RESTful API'ye sahip hızlı ve reaktif bir web uygulaması geliştirdim.",
-      tech: ["React", "Express.js", "SQLite", "Tailwind CSS"],
+      description: "3 rol paneli ve Socket.IO ile gerçek zamanlı senkronizasyon içeren uçtan uca zeytinyağı operasyon yönetim sistemi.",
+      tech: ["React", "Express.js", "SQLite", "Socket.IO", "Tailwind CSS"],
       icon: <Database className="w-5 h-5 text-brand-500 dark:text-brand-300" />,
       images: ["/yaghane.png"],
-      github: "https://github.com/Skavces/Yaghane-Uygulamasi"
+      url: "https://github.com/Skavces/Yaghane-Uygulamasi"
+    },
+    {
+      title: "Kelimo",
+      description: "Reels tarzı dikey kaydırma, aralıklı tekrar ve 4 mini oyun içeren fullstack dil öğrenme uygulaması. Google OAuth, Cloudinary entegrasyonu ve Docker Compose ile containerized ortam.",
+      tech: ["NestJS", "React", "React Native", "Prisma", "PostgreSQL", "Docker"],
+      icon: <Globe className="w-5 h-5 text-brand-500 dark:text-brand-300" />,
+      images: ["/dil.png"],
+      url: "https://github.com/Skavces/KelimoApp"
+    },
+    {
+      title: "SomaFM",
+      description: "Bölgenin radyo ve medya organizasyonu için resmi web ve mobil uygulaması.",
+      tech: ["NestJS", "React", "React-Native", "PostgreSQL"],
+      icon: <Code className="w-5 h-5 text-brand-500 dark:text-brand-300" />,
+      images: ["/somafm.jpg"],
+      url: "https://github.com/berkesongul/somafm"
     }
   ];
 
@@ -66,9 +87,9 @@ export default function Projects() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full"
         >
           {projects.map((project) => (
-            <motion.a 
+            <motion.a
               key={project.title}
-              href={project.github}
+              href={project.url}
               target="_blank"
               rel="noreferrer"
               variants={itemVariants}
@@ -98,13 +119,8 @@ export default function Projects() {
                 </div>
                 
                 <h3 className="text-2xl font-semibold text-brand-900 dark:text-brand-100 mb-3">{project.title}</h3>
-                <div className="space-y-2 mb-6 grow">
-                  <p className="text-brand-700 dark:text-brand-300 text-sm">
-                    <span className="font-semibold text-brand-800 dark:text-brand-200">Problem:</span> {project.problem}
-                  </p>
-                  <p className="text-brand-700 dark:text-brand-300 text-sm">
-                    <span className="font-semibold text-brand-800 dark:text-brand-200">Çözüm:</span> {project.solution}
-                  </p>
+                <div className="mb-6 grow">
+                  <p className="text-brand-700 dark:text-brand-300 text-sm leading-relaxed">{project.description}</p>
                 </div>
                 
                 <div className="flex flex-col gap-4 mt-auto">
