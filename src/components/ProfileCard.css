@@ -21,7 +21,7 @@
   --sunpillar-clr-4: hsl(176, 100%, 76%);
   --sunpillar-clr-5: hsl(228, 100%, 74%);
   --sunpillar-clr-6: hsl(283, 100%, 73%);
-  --card-radius: 30px;
+  --card-radius: 10px;
 }
 
 .pc-container {
@@ -157,16 +157,21 @@
 
 .pc-details h3 {
   color: white;
+  font-family: var(--font-display);
   font-size: 2.2rem;
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   text-align: center;
 }
 
 .pc-details p {
   color: rgba(255, 255, 255, 0.7);
   margin: 5px 0 0;
-  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   text-align: center;
 }
 
@@ -184,7 +189,7 @@
   gap: 10px;
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 100px;
+  border-radius: 4px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -228,7 +233,7 @@
 .pc-contact-btn {
   width: 100%;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;

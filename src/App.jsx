@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useLocation, Routes, Route } from "react-router-dom";
+import { MotionConfig } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
-import { ThemeProvider } from "./components/ThemeContext";
+import TopoBackground from "./components/TopoBackground";
 import "./index.css";
 
 export default function App() {
@@ -26,10 +27,11 @@ export default function App() {
   }, [location]);
 
   return (
-    <ThemeProvider>
+    <MotionConfig reducedMotion="user">
       <div className="min-h-screen flex flex-col scroll-smooth">
+        <TopoBackground />
         <Navbar />
-        <main className="flex-1">
+        <main className="relative z-10 flex-1">
           <Routes>
             <Route
               path="/"
@@ -54,6 +56,6 @@ export default function App() {
         </main>
         <Footer />
       </div>
-    </ThemeProvider>
+    </MotionConfig>
   );
 }
