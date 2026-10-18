@@ -21,6 +21,14 @@ export default function Navbar() {
   useEffect(() => {
     if (location.pathname !== "/") return;
 
+    // Son bölüm (iletişim) sayfa sonunda gözlem bandına giremez; dibe inince elle seçilir.
+    const handleBottom = () => {
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8;
+      if (atBottom) setActiveSection("contact");
+    };
+    window.addEventListener("scroll", handleBottom, { passive: true });
+
     const observerOptions = {
       root: null,
       rootMargin: "-20% 0px -60% 0px",
@@ -39,7 +47,10 @@ export default function Navbar() {
     const sections = document.querySelectorAll("section[id]");
     sections.forEach((section) => observer.observe(section));
 
-    return () => sections.forEach((section) => observer.unobserve(section));
+    return () => {
+      window.removeEventListener("scroll", handleBottom);
+      observer.disconnect();
+    };
   }, [location.pathname]);
 
   const handleNavClick = (id) => {

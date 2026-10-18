@@ -22,6 +22,8 @@ const SCROLL_OMEGA = 8;
 const INTRO_MS = 1600;
 const INTRO_FROM = 0.35; // açılışta arazinin başlangıç yüksekliği
 const FRAME_BUDGET_MS = 8;
+const NOISE_STEP = 0.2; // saniye; noise bu aralıkla hesaplanır, aradaki kareler lerp
+const MAX_DPR = 1; // ince, soluk çizgiler için yüksek çözünürlük gereksiz
 
 // --- 3D simplex noise (Stefan Gustavson) ---
 const GRAD3 = [
@@ -126,6 +128,11 @@ export default function TopoBackground() {
     let cols = 0;
     let rows = 0;
     let field = new Float32Array(0);
+    let nA = new Float32Array(0); // t0 anındaki ham noise
+    let nB = new Float32Array(0); // t1 anındaki ham noise
+    let t0 = 0;
+    let t1 = 0;
+    let cacheScroll = NaN;
     let raf = 0;
     let resizeTimer = 0;
     let prev = 0;
@@ -143,11 +150,15 @@ export default function TopoBackground() {
       cell = cellTiers[tier];
       cols = Math.ceil(width / cell);
       rows = Math.ceil(height / cell);
-      field = new Float32Array((cols + 1) * (rows + 1));
+      const n = (cols + 1) * (rows + 1);
+      field = new Float32Array(n);
+      nA = new Float32Array(n);
+      nB = new Float32Array(n);
+      cacheScroll = NaN;
     };
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
       width = window.innerWidth;
       height = window.innerHeight;
       canvas.width = Math.round(width * dpr);
@@ -156,9 +167,36 @@ export default function TopoBackground() {
       layoutGrid();
     };
 
+    const computeNoise = (out, time, scrollOffset) => {
+      const z = time * DRIFT_SPEED;
+      const stride = cols + 1;
+      for (let j = 0; j <= rows; j++) {
+        const ny = (j * cell + scrollOffset) * NOISE_SCALE;
+        for (let i = 0; i <= cols; i++) {
+          const nx = i * cell * NOISE_SCALE;
+          out[j * stride + i] =
+            (noise(nx, ny, z) + 0.5 * noise(nx * 2.1 + 31.7, ny * 2.1 + 17.3, z * 1.3)) / 1.5;
+        }
+      }
+    };
+
+    // Noise yavaş değiştiği için NOISE_STEP aralıkla hesaplanır, kareler arası lerp edilir.
+    // Scroll hareket ederken önbellek geçersiz olur ve noise doğrudan hesaplanır.
     const sampleField = (time, spanMul, scrollY) => {
       const scrollOffset = scrollY * SCROLL_PARALLAX;
-      const z = time * DRIFT_SPEED;
+      if (!(Math.abs(scrollY - cacheScroll) <= 0.5)) {
+        computeNoise(nB, time, scrollOffset);
+        nA.set(nB);
+        t0 = t1 = time;
+        cacheScroll = scrollY;
+      } else if (time >= t1) {
+        const tmp = nA; nA = nB; nB = tmp;
+        t0 = t1;
+        t1 = Math.max(t0 + NOISE_STEP, time);
+        computeNoise(nB, t1, scrollOffset);
+      }
+      const u = t1 > t0 ? Math.min(Math.max((time - t0) / (t1 - t0), 0), 1) : 1;
+
       const amp = HILL_HEIGHT * hill.x;
       const hillActive = amp > 0.002;
       const r2 = HILL_RADIUS * HILL_RADIUS;
@@ -167,20 +205,16 @@ export default function TopoBackground() {
 
       for (let j = 0; j <= rows; j++) {
         const y = j * cell;
-        const ny = (y + scrollOffset) * NOISE_SCALE;
         for (let i = 0; i <= cols; i++) {
-          const x = i * cell;
-          const nx = x * NOISE_SCALE;
-          const n =
-            (noise(nx, ny, z) + 0.5 * noise(nx * 2.1 + 31.7, ny * 2.1 + 17.3, z * 1.3)) / 1.5;
-          let v = n * span;
+          const k = j * stride + i;
+          let v = (nA[k] + (nB[k] - nA[k]) * u) * span;
           if (hillActive) {
-            const dx = x - px.x;
+            const dx = i * cell - px.x;
             const dy = y - py.x;
             const q = 1 + (dx * dx + dy * dy) / r2;
             v += amp / (q * q);
           }
-          field[j * stride + i] = v;
+          field[k] = v;
         }
       }
     };

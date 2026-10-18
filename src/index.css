@@ -81,7 +81,14 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-control font-medium transition-[transform,background-color,border-color] duration-300 ease-out motion-safe:hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-control font-medium transition-[transform,background-color,border-color] duration-300 ease-out motion-safe:hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] relative;
+  }
+  /* Hover'da buton 2px yukarı kayar; imleç alt kenardayken hover kopup titremesin diye
+     görünmez bir alan butonla birlikte hareket eder ve ilk konumu kapsar. */
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
   }
   .btn-primary {
     @apply bg-brand-900 text-brand-50 hover:bg-brand-800;

@@ -37,18 +37,10 @@ export default function App() {
               path="/"
               element={
                 <>
-                  <section id="home">
-                    <Home />
-                  </section>
-                  <section id="about">
-                    <About />
-                  </section>
-                  <section id="projects">
-                    <Projects />
-                  </section>
-                  <section id="contact">
-                    <Contact />
-                  </section>
+                  <Home />
+                  <About />
+                  <Projects />
+                  <Contact />
                 </>
               }
             />
